@@ -23,11 +23,12 @@ mail = Mail(app)
 # --- CONFIGURACIÓN DE CONEXIÓN A MYSQL ---
 def conectar_bd():
     return mysql.connector.connect(
-        host=os.environ.get('DB_HOST', 'localhost'),
-        user=os.environ.get('DB_USER', 'root'),
-        password=os.environ.get('DB_PASSWORD', 'edrick12'),
-        database=os.environ.get('DB_NAME', 'CONSULTORIOODONTOLOGICO'),
-        port=int(os.environ.get('DB_PORT', 3306))
+        host=os.environ.get('DB_HOST', 'gateway01.us-east-1.prod.aws.tidbcloud.com'),
+        user=os.environ.get('DB_USER', 'MhRDJvKQLPjvSzY.root'),
+        password=os.environ.get('DB_PASSWORD', 'Sl9L3cOnKsqCIZQD'),
+        database=os.environ.get('DB_NAME', 'test'),
+        port=int(os.environ.get('DB_PORT', 4000)),
+        ssl_verify_cert=True
     )
 
 
