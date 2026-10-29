@@ -22,13 +22,14 @@ mail = Mail(app)
 
 # --- CONFIGURACIÓN DE CONEXIÓN A MYSQL ---
 def conectar_bd():
-    return mysql.connector.connect(
+   return mysql.connector.connect(
         host=os.environ.get('DB_HOST', 'gateway01.us-east-1.prod.aws.tidbcloud.com'),
-        user=os.environ.get('DB_USER', 'MhRDJvKQLPjvSzY.root'),
-        password=os.environ.get('DB_PASSWORD', 'Sl9L3cOnKsqCIZQD'),
+        user=os.environ.get('DB_USER', 'MhRDjVkQLPjvSzY.root'),
+        password=os.environ.get('DB_PASSWORD', 'IrdXcviKCq5twvoz'),
         database=os.environ.get('DB_NAME', 'test'),
         port=int(os.environ.get('DB_PORT', 4000)),
-        ssl_verify_cert=True
+        ssl_disabled=False,
+        ssl_verify_identity=False
     )
 
 
@@ -143,7 +144,7 @@ Puedes utilizar este código o presentar el código QR adjunto en este correo pa
 # ==========================================
 @app.route('/agendar_cita_form')
 def agendar_cita_form():
-    return render_template('agendar.html')
+    return render_template('Nuestroservicios.html')
 
 
 @app.route('/agendar', methods=['GET', 'POST'])
