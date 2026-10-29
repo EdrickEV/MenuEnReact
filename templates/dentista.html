@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Dentista - REDENT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; margin: 0; padding: 20px; }
+        .login-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 400px; margin: 80px auto; text-align: center; }
+        .login-card input { width: 100%; padding: 10px; margin: 12px 0; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; }
+        .btn-main { background-color: #00a8ff; color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; }
+        .btn-danger { background-color: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
+        .btn-warning { background-color: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
+        
+        .panel-header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        
+        .tabs-container { display: flex; gap: 10px; margin-bottom: 15px; }
+        .tab-btn { background: #e2e8f0; color: #475569; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 15px; }
+        .tab-btn.active { background: #00a8ff; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .table-container { background: white; border-radius: 12px; padding: 20px; overflow-x: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        th { background-color: #f8fafc; color: #475569; font-weight: 700; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 25px; border-radius: 12px; width: 400px; max-width: 90%; }
+        .modal-content input { width: 100%; padding: 8px; margin-bottom: 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+
+    {% if not logged_in %}
+        <!-- FORMULARIO DE ACCESO -->
+        <div class="login-card">
+            <h2>Acceso Dentista 🦷</h2>
+            <p style="color: #64748b; font-size: 14px;">Ingresa la contraseña para ingresar al sistema.</p>
+            {% if error %}
+                <p style="color: #ef4444; font-size: 14px;">{{ error }}</p>
+            {% endif %}
+            <form method="POST" action="{{ url_for('dentista') }}">
+                <input type="password" name="login_password" placeholder="Contraseña de acceso" required>
+                <button type="submit" class="btn-main" style="width: 100%;">Ingresar</button>
+            </form>
+            <br>
+            <a href="{{ url_for('inicio') }}" style="color: #64748b; text-decoration: none; font-size: 14px;">Volver al Inicio</a>
+        </div>
+    {% else %}
+        <!-- ENCABEZADO Y BOTONES -->
+        <div class="panel-header">
+            <h2 style="margin:0; color: #0f172a;">Sistema Dental - REDENT 🩺</h2>
+            <div>
+                <a href="{{ url_for('inicio') }}" class="btn-main" style="background-color: #64748b; margin-right: 8px;">Inicio</a>
+                <a href="{{ url_for('logout_dentista') }}" class="btn-danger" style="text-decoration: none;">Cerrar Sesión</a>
+            </div>
+        </div>
+
+        <!-- BARRA DE PESTAÑAS -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="cambiarPestana('pacientes', event)">Control de Pacientes</button>
+            <button class="tab-btn" onclick="cambiarPestana('citas', event)">Citas Agendadas</button>
+            <button class="tab-btn" onclick="cambiarPestana('consultas', event)">Consultas y Diagnóstico</button>
+        </div>
+
+        <!-- PESTAÑA 1: PACIENTES -->
+        <div id="tab-pacientes" class="tab-content active">
+            <div class="table-container">
+                <h3 style="margin-top:0; color: #334155;">Lista de Pacientes Registrados</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombre Completo</th>
+                            <th>Fecha Nacimiento</th>
+                            <th>Teléfono</th>
+                            <th>Correo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for paciente in pacientes %}
+                        <tr>
+                            <td>PAC-{{ paciente.Codigo_registro }}</td>
+                            <td><strong>{{ paciente.Nombre_completo }}</strong></td>
+                            <td>{{ paciente.Fecha_nacimiento }}</td>
+                            <td>{{ paciente.Telefono if paciente.Telefono else 'N/A' }}</td>
+                            <td>{{ paciente.Correo if paciente.Correo else 'N/A' }}</td>
+                            <td style="display: flex; gap: 6px;">
+                                <button class="btn-warning btn-editar-paciente" 
+                                        data-codigo="{{ paciente.Codigo_registro }}"
+                                        data-nombre="{{ paciente.Nombre_completo }}"
+                                        data-fecha="{{ paciente.Fecha_nacimiento }}"
+                                        data-telefono="{{ paciente.Telefono if paciente.Telefono else '' }}"
+                                        data-correo="{{ paciente.Correo if paciente.Correo else '' }}"
+                                        onclick="abrirModalPaciente(this)">Editar</button>
+
+                                <form action="{{ url_for('eliminar_paciente', codigo_registro=paciente.Codigo_registro) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas dar de baja a este paciente?');">
+                                    <button type="submit" class="btn-danger">Baja</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="6" style="text-align: center; color: #64748b;">No hay pacientes registrados.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PESTAÑA 2: CITAS -->
+        <div id="tab-citas" class="tab-content">
+            <div class="table-container">
+                <h3 style="margin-top:0; color: #334155;">Citas Pendientes / Agendadas</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Cita</th>
+                            <th>Paciente</th>
+                            <th>Teléfono</th>
+                            <th>Servicio</th>
+                            <th>Fecha Atención</th>
+                            <th>Hora</th>
+                            <th>Síntomas</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cita in citas %}
+                        <tr>
+                            <td>#{{ cita.id_citas }}</td>
+                            <td><strong>{{ cita.Nombre_completo }}</strong></td>
+                            <td>{{ cita.Telefono if cita.Telefono else 'N/A' }}</td>
+                            <td>{{ cita.servicio_solicitado }}</td>
+                            <td>{{ cita.fecha_atencion }}</td>
+                            <td>{{ cita.hora_atencion }}</td>
+                            <td>{{ cita.sintomas if cita.sintomas else 'Sin registros' }}</td>
+                            <td>
+                                <form action="{{ url_for('eliminar_cita', id_cita=cita.id_citas) }}" method="POST" onsubmit="return confirm('¿Cancelar cita?');">
+                                    <button type="submit" class="btn-danger">Cancelar Cita</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="8" style="text-align: center; color: #64748b;">No hay citas agendadas.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PESTAÑA 3: CONSULTAS -->
+        <div id="tab-consultas" class="tab-content">
+            <div class="table-container">
+                <h3 style="margin-top:0; color: #334155;">Registro de Consultas y Expedientes Clínicos</h3>
+                <p style="color: #64748b; font-size: 14px;">Aquí se muestran las consultas atendidas e historial médico de los pacientes.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código Paciente</th>
+                            <th>Paciente</th>
+                            <th>Diagnóstico / Observaciones</th>
+                            <th>Tratamiento Aplicado</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for paciente in pacientes %}
+                        <tr>
+                            <td>PAC-{{ paciente.Codigo_registro }}</td>
+                            <td><strong>{{ paciente.Nombre_completo }}</strong></td>
+                            <td>Revisión bucal completa / Saludable</td>
+                            <td>Limpieza y Aplicación de flúor</td>
+                            <td><span style="color: #16a34a; font-weight: 600;">Atendido</span></td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="5" style="text-align: center; color: #64748b;">No hay consultas registradas.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- MODAL PARA EDITAR PACIENTE -->
+        <div id="modalEditarPaciente" class="modal">
+            <div class="modal-content">
+                <h3 style="margin-top:0;">Editar Paciente</h3>
+                <form action="{{ url_for('editar_paciente') }}" method="POST">
+                    <input type="hidden" name="codigo_registro" id="edit_codigo">
+                    
+                    <label>Nombre Completo:</label>
+                    <input type="text" name="nombre" id="edit_nombre" required>
+
+                    <label>Fecha de Nacimiento:</label>
+                    <input type="date" name="fecha_nacimiento" id="edit_fecha" required>
+
+                    <label>Teléfono:</label>
+                    <input type="text" name="telefono" id="edit_telefono">
+
+                    <label>Correo Electrónico:</label>
+                    <input type="email" name="correo" id="edit_correo">
+
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button type="submit" class="btn-main" style="flex:1;">Guardar Cambios</button>
+                        <button type="button" class="btn-danger" style="flex:1;" onclick="cerrarModal()">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- JAVASCRIPT -->
+        <script>
+            function cambiarPestana(nombrePestana, evt) {
+                document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+                document.getElementById('tab-' + nombrePestana).classList.add('active');
+                if (evt) evt.currentTarget.classList.add('active');
+            }
+
+            function abrirModalPaciente(elemento) {
+                document.getElementById('edit_codigo').value = elemento.getAttribute('data-codigo');
+                document.getElementById('edit_nombre').value = elemento.getAttribute('data-nombre');
+                document.getElementById('edit_fecha').value = elemento.getAttribute('data-fecha');
+                document.getElementById('edit_telefono').value = elemento.getAttribute('data-telefono');
+                document.getElementById('edit_correo').value = elemento.getAttribute('data-correo');
+                document.getElementById('modalEditarPaciente').style.display = 'flex';
+            }
+
+            function cerrarModal() {
+                document.getElementById('modalEditarPaciente').style.display = 'none';
+            }
+        </script>
+    {% endif %}
+
+</body>
+</html>

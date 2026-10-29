@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cita Agendada - REDENT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; display: flex; justify-content: center; padding: 40px 20px; }
+        .card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 480px; width: 100%; text-align: center; }
+        h2 { color: #00a8ff; margin-top: 0; }
+        .info-row { text-align: left; margin-bottom: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; }
+        .label { font-weight: bold; color: #475569; }
+        .value { color: #0f172a; }
+        .qr-section { margin-top: 20px; }
+        .qr-section img { max-width: 180px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px; background: white; }
+        .btn-home { display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #0f172a; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>¡Cita Agendada Exitosamente! 🎉</h2>
+        <p style="color: #64748b; font-size: 14px;">Guarda tu código QR para presentarlo el día de tu consulta.</p>
+
+        <div class="info-row"><span class="label">Folio de Cita:</span> <span class="value">{{ codigo_cita }}</span></div>
+        <div class="info-row"><span class="label">Paciente:</span> <span class="value">{{ nombre }}</span></div>
+        <div class="info-row"><span class="label">Servicio:</span> <span class="value">{{ servicio }}</span></div>
+        <div class="info-row"><span class="label">Fecha:</span> <span class="value">{{ fecha_atencion }}</span></div>
+        <div class="info-row"><span class="label">Hora:</span> <span class="value">{{ hora_atencion }}</span></div>
+        <div class="info-row"><span class="label">Síntomas:</span> <span class="value">{{ sintomas }}</span></div>
+
+        {% if qr_code %}
+        <div class="qr-section">
+            <h3 style="color: #334155; font-size: 16px;">Código QR de la Cita</h3>
+            <img src="data:image/png;base64,{{ qr_code }}" alt="Código QR Cita">
+        </div>
+        {% endif %}
+
+        <a href="{{ url_for('inicio') }}" class="btn-home">Volver al Inicio</a>
+    </div>
+
+</body>
+</html>

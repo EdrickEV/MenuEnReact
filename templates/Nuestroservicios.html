@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendar Cita Dental - REDENT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #eff4f8; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px; 
+        }
+        .form-card { 
+            background: white; 
+            padding: 36px 32px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+            max-width: 480px; 
+            width: 100%; 
+        }
+        .header-title {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .header-title h2 { 
+            margin: 0 0 6px 0; 
+            color: #0284c7; 
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .header-title p { 
+            color: #64748b; 
+            font-size: 14px; 
+            margin: 0;
+        }
+        .form-group { margin-bottom: 18px; }
+        label { 
+            display: block; 
+            font-weight: 600; 
+            margin-bottom: 8px; 
+            color: #334155; 
+            font-size: 14px;
+        }
+        input[type="text"], input[type="date"], select, textarea { 
+            width: 100%; 
+            padding: 12px 14px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 10px; 
+            font-size: 14px;
+            font-family: inherit;
+            color: #0f172a;
+            background-color: #fff;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+        
+        /* Selector de Horarios Disponibles */
+        .time-slots-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .time-slot {
+            padding: 10px 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background-color: #f8fafc;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        .time-slot:hover:not(:disabled) {
+            border-color: #0284c7;
+            background-color: #f0f9ff;
+            color: #0284c7;
+        }
+        .time-slot.selected {
+            background-color: #0284c7 !important;
+            color: white !important;
+            border-color: #0284c7 !important;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+        }
+        .time-slot:disabled, .time-slot.occupied {
+            background-color: #f1f5f9;
+            color: #94a3b8;
+            border-color: #e2e8f0;
+            cursor: not-allowed;
+            text-decoration: line-through;
+            opacity: 0.65;
+        }
+        .slot-legend {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 8px;
+        }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .legend-available { background-color: #0284c7; }
+        .legend-occupied { background-color: #cbd5e1; }
+
+        .btn-confirm { 
+            background-color: #0284c7; 
+            color: white; 
+            width: 100%; 
+            padding: 14px; 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            margin-top: 14px; 
+            font-size: 16px; 
+            transition: background-color 0.2s;
+        }
+        .btn-confirm:hover { background-color: #0369a1; }
+        .btn-cancel { 
+            background-color: #f1f5f9; 
+            color: #475569; 
+            width: 100%; 
+            padding: 12px; 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin-top: 10px; 
+            text-align: center; 
+            text-decoration: none; 
+            display: block; 
+        }
+        .btn-cancel:hover { background-color: #e2e8f0; }
+    </style>
+</head>
+<body>
+
+    <div class="form-card">
+        <div class="header-title">
+            <h2>Agendar Cita Dental 🦷</h2>
+            <p>Ingresa tu código de paciente y selecciona el horario de tu preferencia.</p>
+        </div>
+
+        <form action="{{ url_for('agendar') }}" method="POST" id="appointmentForm">
+
+            <div class="form-group">
+                <label for="codigo_paciente">Tu Código de Paciente:</label>
+                <input type="text" id="codigo_paciente" name="codigo_paciente" placeholder="Ej. PAC-1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="servicio">Servicio solicitado:</label>
+                <select id="servicio" name="servicio" required>
+                    <option value="" disabled selected>Selecciona un servicio</option>
+                    <option value="Limpieza Dental">Limpieza Dental</option>
+                    <option value="Ortodoncia">Ortodoncia</option>
+                    <option value="Blanqueamiento">Blanqueamiento</option>
+                    <option value="Odontología Infantil">Odontología Infantil</option>
+                    <option value="Revisión General">Revisión General</option>
+                    <option value="Extracción">Extracción</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="fecha_atencion">Fecha de atención:</label>
+                <input type="date" id="fecha_atencion" name="fecha_atencion" required>
+            </div>
+
+            <!-- Selector visual de horas -->
+            <div class="form-group">
+                <label>Hora de atención:</label>
+                <div class="slot-legend">
+                    <div class="legend-item"><span class="legend-dot legend-available"></span> Disponible</div>
+                    <div class="legend-item"><span class="legend-dot legend-occupied"></span> Ocupado</div>
+                </div>
+                
+                <div class="time-slots-grid" id="slotsContainer">
+                    <button type="button" class="time-slot" data-time="09:00">09:00 AM</button>
+                    <button type="button" class="time-slot" data-time="10:00">10:00 AM</button>
+                    <button type="button" class="time-slot" data-time="11:00">11:00 AM</button>
+                    <button type="button" class="time-slot" data-time="12:00">12:00 PM</button>
+                    <button type="button" class="time-slot" data-time="14:00">02:00 PM</button>
+                    <button type="button" class="time-slot" data-time="15:00">03:00 PM</button>
+                    <button type="button" class="time-slot" data-time="16:00">04:00 PM</button>
+                    <button type="button" class="time-slot" data-time="17:00">05:00 PM</button>
+                </div>
+
+                <input type="hidden" name="hora_atencion" id="hora_atencion">
+            </div>
+
+            <div class="form-group">
+                <label for="sintomas">Síntomas / Notas adicionales:</label>
+                <textarea id="sintomas" name="sintomas" rows="3" placeholder="Describe brevemente si sientes dolor o alguna molestia especifica..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-confirm">Confirmar Cita</button>
+            <a href="{{ url_for('inicio') }}" class="btn-cancel">Regresar al Inicio</a>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("appointmentForm");
+            const dateInput = document.getElementById("fecha_atencion");
+            const timeInput = document.getElementById("hora_atencion");
+            const slotButtons = document.querySelectorAll(".time-slot");
+
+            // Fecha local actual en formato YYYY-MM-DD
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hoy = `${year}-${month}-${day}`;
+            
+            dateInput.min = hoy;
+            dateInput.value = hoy;
+
+            async function cargarHorariosOcupados(fecha) {
+                timeInput.value = "";
+                slotButtons.forEach(btn => {
+                    btn.classList.remove("selected", "occupied");
+                    btn.disabled = false;
+                });
+
+                if (!fecha) return;
+
+                try {
+                    const response = await fetch(`/api/horarios_ocupados?fecha=${fecha}`);
+                    if (response.ok) {
+                        const ocupados = await response.json();
+                        slotButtons.forEach(btn => {
+                            const hora = btn.dataset.time;
+                            if (ocupados.includes(hora)) {
+                                btn.classList.add("occupied");
+                                btn.disabled = true;
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error al consultar disponibilidad:", error);
+                }
+            }
+
+            dateInput.addEventListener("change", (e) => {
+                cargarHorariosOcupados(e.target.value);
+            });
+
+            slotButtons.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    if (btn.disabled) return;
+                    slotButtons.forEach(b => b.classList.remove("selected"));
+                    btn.classList.add("selected");
+                    timeInput.value = btn.dataset.time;
+                });
+            });
+
+            form.addEventListener("submit", (e) => {
+                if (!timeInput.value) {
+                    e.preventDefault();
+                    alert("Por favor selecciona una hora de atención.");
+                }
+            });
+
+            cargarHorariosOcupados(hoy);
+        });
+    </script>
+</body>
+</html>

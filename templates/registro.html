@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - REDENT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px; 
+        }
+        .form-card { 
+            background: white; 
+            padding: 36px 32px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+            max-width: 480px; 
+            width: 100%; 
+        }
+        h2 { margin-top: 0; color: #0f172a; font-size: 24px; font-weight: 700; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; font-weight: 600; margin-bottom: 6px; color: #334155; font-size: 14px; }
+        input { 
+            width: 100%; 
+            padding: 12px 14px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 10px; 
+            font-size: 14px;
+            font-family: inherit;
+            color: #0f172a;
+            transition: border-color 0.2s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #00a8ff;
+            box-shadow: 0 0 0 3px rgba(0, 168, 255, 0.15);
+        }
+        .btn-confirm { 
+            background-color: #00a8ff; 
+            color: white; 
+            width: 100%; 
+            padding: 14px; 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            margin-top: 10px; 
+            font-size: 16px; 
+            transition: background-color 0.2s;
+        }
+        .btn-confirm:hover { background-color: #0086cc; }
+        .btn-cancel { 
+            background-color: #f1f5f9; 
+            color: #475569; 
+            width: 100%; 
+            padding: 12px; 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin-top: 10px; 
+            text-align: center; 
+            text-decoration: none; 
+            display: block; 
+        }
+        .btn-cancel:hover { background-color: #e2e8f0; }
+    </style>
+</head>
+<body>
+
+    <div class="form-card">
+        <h2>Registro de Paciente 🦷</h2>
+        <p style="color: #64748b; font-size: 14px; margin-bottom: 24px;">Por favor, completa tus datos para registrarte en el sistema y obtener tu código QR.</p>
+
+        <form action="{{ url_for('guardar_paciente') }}" method="POST">
+            
+            <div class="form-group">
+                <label for="nombre">Nombre completo:</label>
+                <input 
+                    type="text" 
+                    id="nombre" 
+                    name="nombre" 
+                    placeholder="Ej. Juan Pérez" 
+                    pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" 
+                    title="Por favor ingresa solo letras y espacios" 
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="fecha_nacimiento">Fecha de nacimiento:</label>
+                <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required>
+            </div>
+
+            <div class="form-group">
+                <label for="telefono">Teléfono / WhatsApp:</label>
+                <input 
+                    type="tel" 
+                    id="telefono" 
+                    name="telefono" 
+                    placeholder="10 dígitos numéricos" 
+                    maxlength="10" 
+                    pattern="[0-9]{10}" 
+                    title="Por favor ingresa exactamente 10 números">
+            </div>
+
+            <div class="form-group">
+                <label for="correo">Correo electrónico (opcional):</label>
+                <input type="email" id="correo" name="correo" placeholder="ejemplo@correo.com">
+            </div>
+
+            <button type="submit" class="btn-confirm">Registrarse</button>
+            <a href="{{ url_for('inicio') }}" class="btn-cancel">Regresar al Inicio</a>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const nombreInput = document.getElementById("nombre");
+            const telefonoInput = document.getElementById("telefono");
+            const fechaInput = document.getElementById("fecha_nacimiento");
+
+            // 1. Limitar fecha de nacimiento (no permitir fechas futuras)
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            fechaInput.max = `${year}-${month}-${day}`;
+
+            // 2. Restringir campo de NOMBRE a solo LETRAS en tiempo real
+            nombreInput.addEventListener("input", (e) => {
+                e.target.value = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, "");
+            });
+
+            // 3. Restringir campo de TELÉFONO a solo NÚMEROS en tiempo real
+            telefonoInput.addEventListener("input", (e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, "");
+            });
+        });
+    </script>
+</body>
+</html>

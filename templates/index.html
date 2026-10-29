@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REDENT - Clínica Dental</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <a href="{{ url_for('inicio') }}" class="logo">REDENT</a>
+            <nav>
+                <a href="#nosotros">Nosotros</a>
+                <a href="{{ url_for('registro') }}">Registro</a>
+                <a href="{{ url_for('dentista') }}">Dentista</a>
+            </nav>
+        </div>
+    </header>
+
+    <section id="inicio">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>Tu sonrisa es nuestra <span>prioridad</span></h1>
+                <p>Cuidamos de tu salud bucal con un equipo altamente capacitado, instalaciones modernas y atención totalmente personalizada.</p>
+                <div class="hero-actions">
+                    <a href="{{ url_for('servicios') }}" class="btn-primary">agendar cita</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="{{ url_for('static', filename='imagenes/Redent(1).png') }}" alt="Cuidado Dental">
+            </div>
+        </div>
+    </section>
+
+    <section id="servicios" class="services-section">
+        <div class="section-header">
+            <h2>Nuestros Servicios</h2>
+        </div>
+        
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="icon-wrapper">
+                    <img src="{{ url_for('static', filename='imagenes/limíezadental.jpg') }}" alt="Limpieza Dental" class="service-icon">
+                </div>
+                <h3>Limpieza Dental</h3>
+                <p>Procedimiento rápido e indoloro para eliminar el sarro y la placa profunda que no se quitan con el cepillado diario.</p>
+            </div>
+            <div class="service-card">
+                <div class="icon-wrapper img">
+                    <img src="{{ url_for('static', filename='imagenes/ortodoncia.jpg') }}" alt="Ortodoncia" class="service-icon">
+                </div>
+                <h3>Ortodoncia</h3>
+                <p>Corrección y alineación precisa de la posición de los dientes y la mordida para una estética y salud óptima.</p>
+            </div>
+            <div class="service-card">
+                <div class="icon-wrapper">
+                    <img src="{{ url_for('static', filename='imagenes/blanquiamiento.jpg') }}" alt="Blanqueamiento" class="service-icon">
+                </div>
+                <h3>Blanqueamiento</h3>
+                <p>Recupera el tono blanco natural de tus dientes y elimina manchas persistentes de forma segura.</p>
+            </div>
+            <div class="service-card">
+                <div class="icon-wrapper">
+                    <img src="{{ url_for('static', filename='imagenes/odontologiainfantil.jpg') }}" alt="Odontología Infantil" class="service-icon">
+                </div>
+                <h3>Odontología Infantil</h3>
+                <p>Cuidado guiado en el crecimiento maxilar y educación preventiva desde temprana edad.</p>
+            </div>
+            <div class="service-card">
+                <div class="icon-wrapper">
+                    <img src="{{ url_for('static', filename='imagenes/revisiion.jpg') }}" alt="Revisión General" class="service-icon">
+                </div>
+                <h3>Revisión General</h3>
+                <p>Evaluación preventiva en 20-30 minutos para diagnosticar el estado general de tus encías, dientes y boca.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="nosotros" class="contact-section">
+        <div class="contact-card">
+            <h2>Nosotros & Contacto</h2>
+            <p>Estamos listos para atenderte en nuestra clínica en Toluca.</p>
+            <div class="contact-details">
+                <div class="contact-item">
+                    <span class="contact-icon">✉️</span>
+                    <div>
+                        <strong>Correo Electrónico:</strong>
+                        <p><a href="mailto:dentis.icela.rodiguez@gmail.com" style="color: #cbd5e1; text-decoration: underline;">dentis.icela.rodiguez@gmail.com</a></p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📍</span>
+                    <div>
+                        <strong>Ubicación:</strong>
+                        <p>Mariano Matamoros No 820, Esq. Rafael M. Hidalgo, Toluca, Estado de México.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
