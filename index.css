@@ -1,14 +1,12 @@
 :root {
     --primary: #00aaff;
     --primary-hover: #0369a1;
-    --accent: #06b6d4;
     --dark-slate: #0f172a;
     --text-dark: #1e293b;
     --text-muted: #64748b;
     --bg-light: #f8fafc;
     --bg-card: #ffffff;
     --border-color: #e2e8f0;
-    --border-focus: #0284c7;
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
     --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
     --radius-md: 12px;
@@ -36,7 +34,6 @@ body {
 }
 
 section,
-footer,
 #nosotros,
 #servicios,
 #inicio {
@@ -98,19 +95,6 @@ nav a:hover {
     color: var(--primary);
 }
 
-.btn-header {
-    background-color: var(--primary);
-    color: #ffffff !important;
-    padding: 0.6rem 1.2rem;
-    border-radius: var(--radius-md);
-    transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.btn-header:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-1px);
-}
-
 /* ==========================================
    SECCIÓN DE INICIO (#inicio)
    ========================================== */
@@ -135,25 +119,10 @@ nav a:hover {
     justify-content: space-between;
     gap: 3rem;
     padding: 2.5rem;
-    background: transparent;
-    border: none;
-    box-shadow: none;
 }
 
 .hero-content {
     max-width: 580px;
-}
-
-.badge {
-    display: inline-block;
-    background-color: rgba(2, 132, 199, 0.15);
-    color: var(--primary-hover);
-    padding: 0.35rem 0.9rem;
-    border-radius: 50px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    border: 1px solid rgba(2, 132, 199, 0.25);
 }
 
 #inicio h1 {
@@ -195,22 +164,6 @@ nav a:hover {
     transform: translateY(-2px);
 }
 
-.btn-secondary {
-    background-color: rgba(255, 255, 255, 0.8);
-    color: var(--text-dark);
-    border: 1px solid var(--border-color);
-    padding: 0.8rem 1.6rem;
-    border-radius: var(--radius-md);
-    text-decoration: none;
-    font-weight: 600;
-    transition: border-color 0.2s, background-color 0.2s;
-}
-
-.btn-secondary:hover {
-    background-color: #ffffff;
-    border-color: var(--primary);
-}
-
 .hero-image {
     display: flex;
     justify-content: center;
@@ -245,11 +198,6 @@ nav a:hover {
     margin-bottom: 0.5rem;
 }
 
-.section-header p {
-    color: var(--text-muted);
-    font-size: 1rem;
-}
-
 .services-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -263,6 +211,10 @@ nav a:hover {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
 .service-card:hover {
@@ -272,15 +224,21 @@ nav a:hover {
 }
 
 .icon-wrapper {
-    font-size: 2rem;
-    background-color: #f0f9ff;
-    width: 55px;
-    height: 55px;
+    width: 150px;
+    height: 150px;
     display: flex;
-    align-items: center;
     justify-content: center;
-    border-radius: var(--radius-md);
-    margin-bottom: 1.2rem;
+    align-items: center;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 0 auto 15px auto;
+}
+
+.icon-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .service-card h3 {
@@ -297,7 +255,7 @@ nav a:hover {
 }
 
 /* ==========================================
-   CONTACTO Y FORMULARIO
+   CONTACTO (#nosotros)
    ========================================== */
 .contact-section {
     max-width: 1200px;
@@ -318,7 +276,7 @@ nav a:hover {
     margin-bottom: 0.5rem;
 }
 
-.contact-card>p {
+.contact-card > p {
     color: #94a3b8;
     margin-bottom: 2.5rem;
 }
@@ -353,149 +311,6 @@ nav a:hover {
     font-size: 0.95rem;
 }
 
-.form-container {
-    background-color: var(--bg-card);
-    width: 100%;
-    max-width: 540px;
-    margin: 3rem auto;
-    padding: 2.5rem;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--border-color);
-}
-
-.form-container h2 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--dark-slate);
-    margin-bottom: 0.4rem;
-}
-
-.form-container>p {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    margin-bottom: 2rem;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-}
-
-.input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-}
-
-.row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-}
-
-label {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--dark-slate);
-}
-
-input[type="text"],
-input[type="tel"],
-input[type="email"],
-input[type="date"],
-input[type="time"],
-select,
-textarea {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    font-size: 0.95rem;
-    color: var(--text-dark);
-    background-color: #f8fafc;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-    background-color: #ffffff;
-    border-color: var(--border-focus);
-    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
-}
-
-textarea {
-    resize: vertical;
-    min-height: 90px;
-}
-
-/* ==========================================
-   BOTONES DEL FORMULARIO (CORREGIDOS)
-   ========================================== */
-.form-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    margin-top: 0.5rem;
-}
-
-.btn-submit {
-    width: 100%;
-    padding: 0.85rem;
-    font-size: 1rem;
-    font-weight: 700;
-    text-align: center;
-    background-color: var(--primary);
-    color: #ffffff;
-    border: none;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
-    transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.btn-submit:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-1px);
-}
-
-.btn-secondary-form {
-    display: block;
-    width: 100%;
-    padding: 0.85rem;
-    font-size: 0.95rem;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
-    color: var(--text-muted);
-    background-color: #f8fafc;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    transition: all 0.2s ease;
-}
-
-.btn-secondary-form:hover {
-    background-color: #e2e8f0;
-    color: var(--dark-slate);
-    border-color: #cbd5e1;
-}
-
-/* ==========================================
-   FOOTER
-   ========================================== */
-footer {
-    width: 100%;
-    background-color: #090d16;
-    color: #64748b;
-    text-align: center;
-    padding: 1.8rem;
-    font-size: 0.85rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
 /* ==========================================
    RESPONSIVE
    ========================================== */
@@ -515,7 +330,7 @@ footer {
 }
 
 @media (max-width: 768px) {
-    nav a:not(.btn-header) {
+    nav a {
         display: none;
     }
 
@@ -526,46 +341,4 @@ footer {
     .contact-card {
         padding: 2rem 1.5rem;
     }
-
-    .form-container {
-        padding: 1.5rem;
-        margin: 1.5rem auto;
-    }
-
-    .row {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* 1. Centra los elementos verticalmente dentro de cada tarjeta */
-.service-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-/* 2. Limita el tamaño del contenedor y recorta lo que sobresalga */
-.icon-wrapper {
-    width: 150px;
-    /* Ajusta según el tamaño deseado */
-    height: 150px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 12px;
-    /* Bordes redondeados como las demás tarjetas */
-    overflow: hidden;
-    /* Oculta las partes de la imagen que sobresalgan */
-    margin: 0 auto 15px auto;
-    /* Centra el bloque en la tarjeta */
-}
-
-/* 3. Fuerza a la imagen a ajustarse dentro de los 60x60 px del contenedor */
-.icon-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    /* Llena el recuadro adaptándose sin deformar la foto */
-    display: block;
 }

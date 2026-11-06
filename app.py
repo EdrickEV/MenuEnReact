@@ -6,8 +6,11 @@ import mysql.connector
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_mail import Mail, Message
 
-app = Flask(__name__, static_folder='static', template_folder='templates')
-app.secret_key = os.environ.get('SECRET_KEY', '1234')
+# Definir la ruta raíz absoluta para que Flask encuentre los archivos HTML y CSS sin error
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+app = Flask(__name__, template_folder=basedir, static_folder=basedir)
+app.secret_key = os.environ.get('SECRET_KEY', 'doctora123')
 
 # --- CONFIGURACIÓN DE FLASK-MAIL ---
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -22,7 +25,7 @@ mail = Mail(app)
 
 # --- CONFIGURACIÓN DE CONEXIÓN A MYSQL ---
 def conectar_bd():
-   return mysql.connector.connect(
+    return mysql.connector.connect(
         host=os.environ.get('DB_HOST', 'gateway01.us-east-1.prod.aws.tidbcloud.com'),
         user=os.environ.get('DB_USER', 'MhRDjVkQLPjvSzY.root'),
         password=os.environ.get('DB_PASSWORD', 'IrdXcviKCq5twvoz'),

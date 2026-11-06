@@ -1,0 +1,80 @@
+body { 
+        font-family: 'Plus Jakarta Sans', sans-serif; 
+        background-color: #f8fafc; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px; 
+    }
+    .form-card { 
+        background: white; 
+        padding: 36px 32px; 
+        border-radius: 20px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+        max-width: 480px; 
+        width: 100%; 
+        text-align: center; /* <--- Esto centra el texto del título y subtítulo */
+    }
+    h2 { 
+        margin-top: 0; 
+        color: #0f172a; 
+        font-size: 24px; 
+        font-weight: 700; 
+    }
+    .form-group { 
+        margin-bottom: 18px; 
+        text-align: left; /* <--- Esto mantiene los inputs y etiquetas ordenados a la izquierda dentro del formulario centrado */
+    }
+    label { 
+        display: block; 
+        font-weight: 600; 
+        margin-bottom: 6px; 
+        color: #334155; 
+        font-size: 14px; 
+    }
+    input { 
+        width: 100%; 
+        padding: 12px 14px; 
+        border: 1px solid #cbd5e1; 
+        border-radius: 10px; 
+        font-size: 14px;
+        font-family: inherit;
+        color: #0f172a;
+        transition: border-color 0.2s;
+    }
+    input:focus {
+        outline: none;
+        border-color: #00a8ff;
+        box-shadow: 0 0 0 3px rgba(0, 168, 255, 0.15);
+    }
+    .btn-confirm { 
+        background-color: #00a8ff; 
+        color: white; 
+        width: 100%; 
+        padding: 14px; 
+        border: none; 
+        border-radius: 10px; 
+        font-weight: 700; 
+        cursor: pointer; 
+        margin-top: 10px; 
+        font-size: 16px; 
+        transition: background-color 0.2s;
+    }
+    .btn-confirm:hover { background-color: #0086cc; }
+    .btn-cancel { 
+        background-color: #f1f5f9; 
+        color: #475569; 
+        width: 100%; 
+        padding: 12px; 
+        border: none; 
+        border-radius: 10px; 
+        font-weight: 600; 
+        cursor: pointer; 
+        margin-top: 10px; 
+        text-align: center; 
+        text-decoration: none; 
+        display: block; 
+    }
+    .btn-cancel:hover { background-color: #e2e8f0; }

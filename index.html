@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>REDENT - Clínica Dental</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Enlace CSS corregido para Flask -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 </head>
 <body>
     <header>
@@ -29,7 +30,8 @@
                 </div>
             </div>
             <div class="hero-image">
-                <img src="{{ url_for('static', filename='imagenes/Redent(1).png') }}" alt="Cuidado Dental">
+                <!-- Imagen principal corregida -->
+                <img src="{{ url_for('static', filename='static/imagenes/Redent(1).png') }}" alt="Cuidado Dental">
             </div>
         </div>
     </section>
@@ -42,35 +44,35 @@
         <div class="services-grid">
             <div class="service-card">
                 <div class="icon-wrapper">
-                    <img src="{{ url_for('static', filename='imagenes/limíezadental.jpg') }}" alt="Limpieza Dental" class="service-icon">
+                    <img src="{{ url_for('static', filename='static/imagenes/limíezadental.jpg.jpeg') }}" alt="Limpieza Dental" class="service-icon">
                 </div>
                 <h3>Limpieza Dental</h3>
                 <p>Procedimiento rápido e indoloro para eliminar el sarro y la placa profunda que no se quitan con el cepillado diario.</p>
             </div>
             <div class="service-card">
                 <div class="icon-wrapper img">
-                    <img src="{{ url_for('static', filename='imagenes/ortodoncia.jpg') }}" alt="Ortodoncia" class="service-icon">
+                    <img src="{{ url_for('static', filename='static/imagenes/ortodoncia.jpg.jpeg') }}" alt="Ortodoncia" class="service-icon">
                 </div>
                 <h3>Ortodoncia</h3>
                 <p>Corrección y alineación precisa de la posición de los dientes y la mordida para una estética y salud óptima.</p>
             </div>
             <div class="service-card">
                 <div class="icon-wrapper">
-                    <img src="{{ url_for('static', filename='imagenes/blanquiamiento.jpg') }}" alt="Blanqueamiento" class="service-icon">
+                    <img src="{{ url_for('static', filename='static/imagenes/blanquiamiento.jpg.jpeg') }}" alt="Blanqueamiento" class="service-icon">
                 </div>
                 <h3>Blanqueamiento</h3>
                 <p>Recupera el tono blanco natural de tus dientes y elimina manchas persistentes de forma segura.</p>
             </div>
             <div class="service-card">
                 <div class="icon-wrapper">
-                    <img src="{{ url_for('static', filename='imagenes/odontologiainfantil.jpg') }}" alt="Odontología Infantil" class="service-icon">
+                    <img src="{{ url_for('static', filename='static/imagenes/ortodoncia.jpg.jpeg') }}" alt="Odontología Infantil" class="service-icon">
                 </div>
                 <h3>Odontología Infantil</h3>
                 <p>Cuidado guiado en el crecimiento maxilar y educación preventiva desde temprana edad.</p>
             </div>
             <div class="service-card">
                 <div class="icon-wrapper">
-                    <img src="{{ url_for('static', filename='imagenes/revisiion.jpg') }}" alt="Revisión General" class="service-icon">
+                    <img src="{{ url_for('static', filename='static/imagenes/revisiion.jpg.jpeg') }}" alt="Revisión General" class="service-icon">
                 </div>
                 <h3>Revisión General</h3>
                 <p>Evaluación preventiva en 20-30 minutos para diagnosticar el estado general de tus encías, dientes y boca.</p>
