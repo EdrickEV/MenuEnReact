@@ -1,3 +1,2 @@
-[core]
-	repositoryformatversion = 0
-	filem
+Flask
+pymysql
