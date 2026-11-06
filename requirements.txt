@@ -1,2 +1,4 @@
 Flask
-pymysql
+Flask-Mail
+mysql-connector-python
+qrcode
