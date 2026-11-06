@@ -25,15 +25,20 @@ mail = Mail(app)
 
 # --- CONFIGURACIÓN DE CONEXIÓN A MYSQL ---
 def conectar_bd():
-    return mysql.connector.connect(
-        host=os.environ.get('DB_HOST', 'gateway01.us-east-1.prod.aws.tidbcloud.com'),
-        user=os.environ.get('DB_USER', 'MhRDjVkQLPjvSzY.root'),
-        password=os.environ.get('DB_PASSWORD', 'IrdXcviKCq5twvoz'),
-        database=os.environ.get('DB_NAME', 'test'),
-        port=int(os.environ.get('DB_PORT', 4000)),
-        ssl_disabled=False,
-        ssl_verify_identity=False
-    )
+    try:
+        return mysql.connector.connect(
+            host=os.environ.get('DB_HOST', 'gateway01.us-east-1.prod.aws.tidbcloud.com'),
+            user=os.environ.get('DB_USER', 'MhRDjVkQLPjvSzY.root'),
+            password=os.environ.get('DB_PASSWORD', 'IrdXcviKCq5twvoz'),
+            database=os.environ.get('DB_NAME', 'test'),
+            port=int(os.environ.get('DB_PORT', 4000)),
+            ssl_disabled=False,
+            ssl_verify_identity=False,
+            connect_timeout=5
+        )
+    except Exception as e:
+        print(f"Error de conexión a la BD: {e}")
+        raise e
 
 
 # --- NAVEGACIÓN PRINCIPAL ---
@@ -296,31 +301,34 @@ def dentista():
     citas = []
 
     if logged_in:
-        conexion = conectar_bd()
-        cursor = conexion.cursor(dictionary=True)
+        try:
+            conexion = conectar_bd()
+            cursor = conexion.cursor(dictionary=True)
 
-        cursor.execute("SELECT * FROM Pacientes ORDER BY Codigo_registro DESC")
-        pacientes = cursor.fetchall()
+            cursor.execute("SELECT * FROM Pacientes ORDER BY Codigo_registro DESC")
+            pacientes = cursor.fetchall()
 
-        query_citas = """
-            SELECT 
-                c.id_citas,
-                c.paciente_codigo,
-                p.Nombre_completo,
-                p.Telefono,
-                c.servicio_solicitado,
-                c.fecha_atencion,
-                c.hora_atencion,
-                c.sintomas
-            FROM citas c
-            LEFT JOIN Pacientes p ON c.paciente_codigo = p.Codigo_registro
-            ORDER BY c.fecha_atencion DESC, c.hora_atencion ASC
-        """
-        cursor.execute(query_citas)
-        citas = cursor.fetchall()
+            query_citas = """
+                SELECT 
+                    c.id_citas,
+                    c.paciente_codigo,
+                    p.Nombre_completo,
+                    p.Telefono,
+                    c.servicio_solicitado,
+                    c.fecha_atencion,
+                    c.hora_atencion,
+                    c.sintomas
+                FROM citas c
+                LEFT JOIN Pacientes p ON c.paciente_codigo = p.Codigo_registro
+                ORDER BY c.fecha_atencion DESC, c.hora_atencion ASC
+            """
+            cursor.execute(query_citas)
+            citas = cursor.fetchall()
 
-        cursor.close()
-        conexion.close()
+            cursor.close()
+            conexion.close()
+        except Exception as e:
+            print(f"Error cargando panel del dentista: {e}")
 
     return render_template('dentista.html', logged_in=logged_in, pacientes=pacientes, citas=citas)
 
@@ -342,17 +350,20 @@ def editar_paciente():
     telefono = request.form['telefono']
     correo = request.form['correo']
 
-    conexion = conectar_bd()
-    cursor = conexion.cursor()
-    query = """
-        UPDATE Pacientes 
-        SET Nombre_completo = %s, Fecha_nacimiento = %s, Telefono = %s, Correo = %s
-        WHERE Codigo_registro = %s
-    """
-    cursor.execute(query, (nombre, fecha_nacimiento, telefono, correo, codigo_registro))
-    conexion.commit()
-    cursor.close()
-    conexion.close()
+    try:
+        conexion = conectar_bd()
+        cursor = conexion.cursor()
+        query = """
+            UPDATE Pacientes 
+            SET Nombre_completo = %s, Fecha_nacimiento = %s, Telefono = %s, Correo = %s
+            WHERE Codigo_registro = %s
+        """
+        cursor.execute(query, (nombre, fecha_nacimiento, telefono, correo, codigo_registro))
+        conexion.commit()
+        cursor.close()
+        conexion.close()
+    except Exception as e:
+        print(f"Error editando paciente: {e}")
 
     return redirect(url_for('dentista'))
 
@@ -362,13 +373,16 @@ def eliminar_paciente(codigo_registro):
     if not session.get('dentista_logged_in'):
         return redirect(url_for('dentista'))
 
-    conexion = conectar_bd()
-    cursor = conexion.cursor()
-    query = "DELETE FROM Pacientes WHERE Codigo_registro = %s"
-    cursor.execute(query, (codigo_registro,))
-    conexion.commit()
-    cursor.close()
-    conexion.close()
+    try:
+        conexion = conectar_bd()
+        cursor = conexion.cursor()
+        query = "DELETE FROM Pacientes WHERE Codigo_registro = %s"
+        cursor.execute(query, (codigo_registro,))
+        conexion.commit()
+        cursor.close()
+        conexion.close()
+    except Exception as e:
+        print(f"Error eliminando paciente: {e}")
 
     return redirect(url_for('dentista'))
 
@@ -378,13 +392,16 @@ def eliminar_cita(id_cita):
     if not session.get('dentista_logged_in'):
         return redirect(url_for('dentista'))
 
-    conexion = conectar_bd()
-    cursor = conexion.cursor()
-    query = "DELETE FROM citas WHERE id_citas = %s"
-    cursor.execute(query, (id_cita,))
-    conexion.commit()
-    cursor.close()
-    conexion.close()
+    try:
+        conexion = conectar_bd()
+        cursor = conexion.cursor()
+        query = "DELETE FROM citas WHERE id_citas = %s"
+        cursor.execute(query, (id_cita,))
+        conexion.commit()
+        cursor.close()
+        conexion.close()
+    except Exception as e:
+        print(f"Error eliminando cita: {e}")
 
     return redirect(url_for('dentista'))
 
