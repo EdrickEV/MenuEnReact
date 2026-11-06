@@ -11,7 +11,7 @@
 <body>
     <header>
         <div class="nav-container">
-            <a href="{{ url_for('inicio') }}" class="logo">REDENT</a>
+            <a href="{{ url_for('inicio') }}" c lass="logo">REDENT</a>
             <nav>
                 <a href="#nosotros">Nosotros</a>
                 <a href="{{ url_for('registro') }}">Registro</a>
@@ -20,7 +20,7 @@
         </div>
     </header>
 
-    <section id="inicio">
+    <section id="inicio" style="background-image: linear-gradient(135deg, rgba(240, 249, 255, 0.60) 0%, rgba(224, 242, 254, 0.60) 100%), url('{{ url_for('static', filename='imagenes/fondosdientes.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"></section>
         <div class="hero-container">
             <div class="hero-content">
                 <h1>Tu sonrisa es nuestra <span>prioridad</span></h1>
@@ -44,7 +44,7 @@
         <div class="services-grid">
             <div class="service-card">
                 <div class="icon-wrapper">
-                    <img src="{{ url_for('static', filename='imagenes/limpieza.jpg') }}" alt="Limpieza Dental" class="service-icon">
+                    <img src="{{ url_for('static', filename='imagenes/respaldo.jpg') }}" alt="Limpieza Dental" class="service-icon">
                </div>
                 <h3>Limpieza Dental</h3>
                 <p>Procedimiento rápido e indoloro para eliminar el sarro y la placa profunda que no se quitan con el cepillado diario.</p>
