@@ -2,3 +2,4 @@ Flask
 Flask-Mail
 mysql-connector-python
 qrcode
+Pillow

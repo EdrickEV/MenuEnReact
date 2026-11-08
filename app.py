@@ -17,6 +17,7 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', '00edrick00247@gmail.com')
+# NOTA: Asegúrate de usar una Contraseña de Aplicación de 16 caracteres de Google aquí
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', 'namakzzxhyldwbnp')
 app.config['MAIL_DEFAULT_SENDER'] = ('REDENT Odontología', os.environ.get('MAIL_USERNAME', '00edrick00247@gmail.com'))
 
@@ -94,37 +95,41 @@ def guardar_paciente():
             qr.add_data(codigo)
             qr.make(fit=True)
             img = qr.make_image(fill_color="black", back_color="white")
-            
+
             img_io = io.BytesIO()
             img.save(img_io, 'PNG')
-            img_io.seek(0)
+            qr_bytes = img_io.getvalue()
 
-            qr_base64 = base64.b64encode(img_io.getvalue()).decode('utf-8')
-            img_io.seek(0)
+            qr_base64 = base64.b64encode(qr_bytes).decode('utf-8')
 
             if correo:
                 msg = Message(
                     subject="¡Registro exitoso en REDENT - Tu Código QR de Paciente!",
                     recipients=[correo]
                 )
-                msg.body = f"""Hola {nombre},
-
-Gracias por registrarte en el Consultorio Odontológico REDENT.
-Tu código de paciente es: {codigo}
-
-Puedes utilizar este código o presentar el código QR adjunto en este correo para agendar tus próximas citas de manera rápida.
-
-¡Te esperamos!
-"""
+                msg.body = f"Hola {nombre},\n\nGracias por registrarte en el Consultorio Odontológico REDENT.\nTu código de paciente es: {codigo}\n\nPuedes presentar el código QR adjunto en tus próximas citas."
+                msg.html = f"""
+                <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px;">
+                    <h2>¡Bienvenido a REDENT Odontología!</h2>
+                    <p>Hola <strong>{nombre}</strong>,</p>
+                    <p>Gracias por registrarte en nuestro consultorio.</p>
+                    <p>Tu código de paciente asignado es: <b style="font-size: 1.2em; color: #0056b3;">{codigo}</b></p>
+                    <p>Presenta el siguiente código QR para agendar o confirmar tus citas rápidamente:</p>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <img src="data:image/png;base64,{qr_base64}" alt="Código QR Paciente" style="width: 200px; height: 200px;" />
+                    </div>
+                    <p>¡Te esperamos!</p>
+                </div>
+                """
                 msg.attach(
                     filename=f"codigo_qr_{codigo}.png",
                     content_type="image/png",
-                    data=img_io.read()
+                    data=qr_bytes
                 )
 
                 mail.send(msg)
         except Exception as mail_error:
-            print(f"Error al procesar/enviar el correo de registro: {mail_error}")
+            print(f"[ERROR EMAIL PACIENTE]: {mail_error}")
 
         return render_template(
             'confirmacion.html',
@@ -175,18 +180,18 @@ def agendar():
             conexion = conectar_bd()
             cursor = conexion.cursor(dictionary=True)
 
-            # Verificar que el paciente exista y obtener sus datos (nombre y correo)
+            # Verificar que el paciente exista
             cursor.execute("SELECT Codigo_registro, Nombre_completo, Correo FROM Pacientes WHERE Codigo_registro = %s", (paciente_id,))
             paciente = cursor.fetchone()
             if not paciente:
                 return "<h3>Error: El código de paciente no está registrado en la base de datos.</h3>", 400
 
-            # Verificar si el horario ya está ocupado en la BD
+            # Verificar horario ocupado
             cursor.execute("SELECT id_citas FROM citas WHERE fecha_atencion = %s AND hora_atencion = %s", (fecha, hora))
             if cursor.fetchone():
                 return "<h3>Error: Ese horario ya fue ocupado. Por favor elige otro.</h3>", 400
 
-            # Guardar la cita en MySQL
+            # Guardar cita
             query_cita = """
                 INSERT INTO citas (paciente_codigo, servicio_solicitado, fecha_atencion, hora_atencion, sintomas)
                 VALUES (%s, %s, %s, %s, %s)
@@ -205,33 +210,40 @@ def agendar():
                 qr.add_data(f"Cita: {codigo_cita} | Paciente: {paciente['Nombre_completo']} | Fecha: {fecha} {hora} | Servicio: {servicio}")
                 qr.make(fit=True)
                 img = qr.make_image(fill_color="black", back_color="white")
-                
+
                 img_io = io.BytesIO()
                 img.save(img_io, 'PNG')
-                img_io.seek(0)
+                qr_bytes = img_io.getvalue()
 
-                qr_base64 = base64.b64encode(img_io.getvalue()).decode('utf-8')
+                qr_base64 = base64.b64encode(qr_bytes).decode('utf-8')
 
                 if paciente['Correo']:
-                    img_io.seek(0)
                     msg = Message(
                         subject=f"¡Cita Agendada Exitosamente - Folio {codigo_cita}!",
                         recipients=[paciente['Correo']]
                     )
-                    msg.body = f"""Hola {paciente['Nombre_completo']},
-
-Tu cita para el servicio de {servicio} ha sido agendada con éxito.
-- Folio de Cita: {codigo_cita}
-- Fecha: {fecha} a las {hora}
-
-Adjunto encontrarás tu código QR para presentar el día de tu consulta.
-
-¡Te esperamos en REDENT!
-"""
-                    msg.attach(f"qr_{codigo_cita}.png", "image/png", img_io.read())
+                    msg.body = f"Hola {paciente['Nombre_completo']},\n\nTu cita para {servicio} el día {fecha} a las {hora} ha sido agendada.\nFolio: {codigo_cita}"
+                    msg.html = f"""
+                    <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px;">
+                        <h2>Confirmación de Cita - REDENT</h2>
+                        <p>Hola <strong>{paciente['Nombre_completo']}</strong>,</p>
+                        <p>Tu cita para el servicio de <strong>{servicio}</strong> ha sido agendada con éxito.</p>
+                        <ul>
+                            <li><b>Folio de Cita:</b> {codigo_cita}</li>
+                            <li><b>Fecha:</b> {fecha}</li>
+                            <li><b>Hora:</b> {hora}</li>
+                        </ul>
+                        <p>Adjunto y a continuación encontrarás tu código QR para presentar el día de tu consulta:</p>
+                        <div style="text-align: center; margin: 20px 0;">
+                            <img src="data:image/png;base64,{qr_base64}" alt="Código QR Cita" style="width: 200px; height: 200px;" />
+                        </div>
+                        <p>¡Te esperamos en REDENT Odontología!</p>
+                    </div>
+                    """
+                    msg.attach(f"qr_{codigo_cita}.png", "image/png", qr_bytes)
                     mail.send(msg)
             except Exception as mail_err:
-                print(f"Error al procesar/enviar el correo o QR de la cita: {mail_err}")
+                print(f"[ERROR EMAIL CITA]: {mail_err}")
 
             return render_template(
                 'confirmacion_cita.html',

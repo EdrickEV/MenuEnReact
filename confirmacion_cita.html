@@ -1,29 +1,33 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cita Agendada - REDENT</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='confirmacion._cita.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+        <link rel="stylesheet" href="{{ url_for('static', filename='confirmacion_cita.css') }}">
 </head>
+
 <body>
 
     <div class="card">
         <h2>¡Cita Agendada Exitosamente! 🎉</h2>
         <p style="color: #64748b; font-size: 14px;">Guarda tu código QR para presentarlo el día de tu consulta.</p>
 
-        <div class="info-row"><span class="label">Folio de Cita:</span> <span class="value">{{ codigo_cita }}</span></div>
+        <div class="info-row"><span class="label">Folio de Cita:</span> <span class="value">{{ codigo_cita }}</span>
+        </div>
         <div class="info-row"><span class="label">Paciente:</span> <span class="value">{{ nombre }}</span></div>
         <div class="info-row"><span class="label">Servicio:</span> <span class="value">{{ servicio }}</span></div>
         <div class="info-row"><span class="label">Fecha:</span> <span class="value">{{ fecha_atencion }}</span></div>
         <div class="info-row"><span class="label">Hora:</span> <span class="value">{{ hora_atencion }}</span></div>
         <div class="info-row"><span class="label">Síntomas:</span> <span class="value">{{ sintomas }}</span></div>
 
-        {% if qr_code %}
+        {% if qr_base64 %}
         <div class="qr-section">
             <h3 style="color: #334155; font-size: 16px;">Código QR de la Cita</h3>
-            <img src="data:image/png;base64,{{ qr_code }}" alt="Código QR Cita">
+            <img src="data:image/png;base64,{{ qr_base64 }}" alt="Código QR Cita">
         </div>
         {% endif %}
 
@@ -31,4 +35,5 @@
     </div>
 
 </body>
+
 </html>
