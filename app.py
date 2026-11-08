@@ -266,7 +266,7 @@ def agendar():
             if conexion and conexion.is_connected():
                 conexion.close()
 
-    return render_template('agendar.html')
+    return render_template('Nuestroservicios.html')
 
 
 @app.route('/api/horarios_ocupados', methods=['GET'])
