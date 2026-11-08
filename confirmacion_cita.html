@@ -7,7 +7,7 @@
     <title>Cita Agendada - REDENT</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet">
-        <link rel="stylesheet" href="{{ url_for('static', filename='confirmacion_cita.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='confirmacion_cita.css') }}">
 </head>
 
 <body>
@@ -24,10 +24,10 @@
         <div class="info-row"><span class="label">Hora:</span> <span class="value">{{ hora_atencion }}</span></div>
         <div class="info-row"><span class="label">Síntomas:</span> <span class="value">{{ sintomas }}</span></div>
 
-        {% if qr_base64 %}
+        {% if qr_code %}
         <div class="qr-section">
             <h3 style="color: #334155; font-size: 16px;">Código QR de la Cita</h3>
-            <img src="data:image/png;base64,{{ qr_base64 }}" alt="Código QR Cita">
+            <img src="data:image/png;base64,{{ qr_code }}" alt="Código QR Cita">
         </div>
         {% endif %}
 

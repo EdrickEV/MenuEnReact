@@ -3,36 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cita Agendada - REDENT</title>
+    <title>Registro Exitoso - REDENT</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='confirmacion.css') }}">
 </head>
 <body>
 
     <div class="card">
-        <h2>¡Cita Agendada Exitosamente! 🎉</h2>
-        <p style="color: #64748b; font-size: 14px;">Guarda tu código QR para presentarlo el día de tu consulta.</p>
+        <h2>¡Registro Exitoso! 🎉</h2>
+        <p style="color: #64748b; font-size: 14px;">Conserva tu código de paciente para agendar tus futuras citas.</p>
 
         <div class="info-row" style="background: #e0f2fe; padding: 12px; border-radius: 8px; text-align: center; border-bottom: none;">
-            <span class="label" style="display: block; font-size: 13px; color: #0369a1;">Folio de Cita:</span> 
-            <span class="value" style="font-size: 24px; font-weight: 800; color: #0284c7;">{{ codigo_cita }}</span>
+            <span class="label" style="display: block; font-size: 13px; color: #0369a1;">Código de Paciente:</span> 
+            <span class="value" style="font-size: 24px; font-weight: 800; color: #0284c7;">{{ codigo }}</span>
         </div>
 
         <div class="info-row"><span class="label">Paciente:</span> <span class="value">{{ nombre }}</span></div>
-        <div class="info-row"><span class="label">Servicio:</span> <span class="value">{{ servicio }}</span></div>
-        <div class="info-row"><span class="label">Fecha:</span> <span class="value">{{ fecha_atencion }}</span></div>
-        <div class="info-row"><span class="label">Hora:</span> <span class="value">{{ hora_atencion }}</span></div>
-        <div class="info-row"><span class="label">Síntomas:</span> <span class="value">{{ sintomas }}</span></div>
+        <div class="info-row"><span class="label">Fecha de Nacimiento:</span> <span class="value">{{ fecha_nacimiento }}</span></div>
 
-        <!-- Sección del Código QR agregada -->
         {% if qr_code %}
-        <div class="qr-section" style="text-align: center; margin: 20px 0;">
-            <h3 style="color: #334155; font-size: 15px; margin-bottom: 8px;">Tu Código QR de Cita</h3>
-            <img src="data:image/png;base64,{{ qr_code }}" alt="Código QR Cita" style="width: 180px; height: 180px;">
+        <div class="qr-section">
+            <h3 style="color: #334155; font-size: 15px; margin-bottom: 8px;">Tu Código QR de Paciente</h3>
+            <img src="data:image/png;base64,{{ qr_code }}" alt="Código QR Paciente">
         </div>
         {% endif %}
 
         <div class="button-group">
+            <a href="{{ url_for('servicios') }}" class="btn-agendar">Agendar Cita Ahora</a>
             <a href="{{ url_for('inicio') }}" class="btn-home">Volver al Inicio</a>
         </div>
     </div>
